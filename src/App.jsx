@@ -7,32 +7,49 @@ import Spinner from 'react-bootstrap/Spinner';
 import TimerArea from './component/TimerArea';
 import Footer from './component/Footer';
 import Header from './component/Header';
-import firebase from './firebase';
+import { db } from './firebase'; // Import updated Firestore instance
 import { setPeriods as setTimerServicePeriods } from './services/timer';
+import { doc, onSnapshot } from 'firebase/firestore'; // Import Firestore methods
 
 const App = () => {
   const [shouldAutoStart, setShouldAutoStart] = useState(false);
-  const [periods, setPeriods] = useState(null);
+  const periods = {
+    longBrk: { id: 'Long Break', mins: 15, secs: 0 },
+    shortBrk: { id: 'Short Break', mins: 5, secs: 0 },
+    work: { id: 'Work', mins: 25, secs: 0 },
+  };
+  
+  
+  //const [periods, setPeriods] = useState(null);
 
-  useEffect(() => {
-    firebase.firestore()
-      .collection('timer')
-      .doc('settings')
-      .onSnapshot((doc) => {
-        const dbPeriods = doc.data().periods;
-        setTimerServicePeriods(dbPeriods);
-        setPeriods(dbPeriods);
-      });
-  }, []);
-  if (!periods) {
-    return (
-      <Spinner className="spinner" animation="border" role="status">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
-    );
-  }
+  // useEffect(() => {
+  //   // Reference the "timer" collection and "settings" document
+  //   const settingsDocRef = doc(db, 'timer', 'settings');
 
-  const toggleShouldAutoStart = () => { setShouldAutoStart(!shouldAutoStart); };
+  //   // Real-time listener using onSnapshot
+  //   const unsubscribe = onSnapshot(settingsDocRef, (docSnapshot) => {
+  //     if (docSnapshot.exists()) {
+  //       const dbPeriods = docSnapshot.data().periods;
+  //       setTimerServicePeriods(dbPeriods);
+  //       setPeriods(dbPeriods);
+  //     }
+  //   });
+
+  //   // Cleanup the listener on unmount
+  //   return () => unsubscribe();
+  // }, []);
+
+  // if (!periods) {
+  //   return (
+  //     <Spinner className="spinner" animation="border" role="status">
+  //       <span className="sr-only">Loading...</span>
+  //     </Spinner>
+  //   );
+  // }
+
+  const toggleShouldAutoStart = () => {
+    setShouldAutoStart(!shouldAutoStart);
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100">

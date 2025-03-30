@@ -13,7 +13,12 @@ export const setPeriods = (newPeriods) => {
  *   decremented but not over yet
  * @param {function} timeOverCallback function to call when time is over
  */
-export const decrementOneSec = (mins, secs, timeDecrementedCallback, timeOverCallback) => {
+export const decrementOneSec = (
+  mins,
+  secs,
+  timeDecrementedCallback,
+  timeOverCallback
+) => {
   if (mins === 0 && secs === 0) {
     timeOverCallback();
   } else if (secs === 0) {
@@ -34,7 +39,7 @@ export const determineNextPeriod = (currentPeriod, counter) => {
     return periods.longBrk;
   }
 
-  if (currentPeriod.id === 'work') {
+  if (currentPeriod.id === "work") {
     return periods.shortBrk;
   }
 
@@ -50,10 +55,11 @@ export const determineNextPeriod = (currentPeriod, counter) => {
  * @string {icon} the URL of an image to show inside the notification
  * @return {object} Notification object
  */
-const createNotification = (text, icon) => new Notification('Pomodoro', {
-  body: text,
-  icon,
-});
+const createNotification = (text, icon) =>
+  new Notification("Pomodoro", {
+    body: text,
+    icon,
+  });
 
 /**
  * Shows a notification and picks the text for it based on the period.
@@ -61,12 +67,12 @@ const createNotification = (text, icon) => new Notification('Pomodoro', {
  */
 const showNotificationForPeriod = (period) => {
   let text = null;
-  const icon = 'https://source.unsplash.com/1600x900/?nature,water;';
-  if (period.id === 'long-brk') {
+  const icon = "https://source.unsplash.com/1600x900/?nature,water;";
+  if (period.id === "long-brk") {
     text = `Great job! Take a long break. You have ${periods.longBrk.mins} minutes.`;
-  } else if (period.id === 'work') {
+  } else if (period.id === "work") {
     text = `Time to get back to work! Your next break starts in ${periods.work.mins} minutes.`;
-  } else if (period.id === 'short-brk') {
+  } else if (period.id === "short-brk") {
     text = `Nice work! Take a short break. You have ${periods.shortBrk.mins} minutes.`;
   }
   createNotification(text, icon);
@@ -78,11 +84,11 @@ const showNotificationForPeriod = (period) => {
  * @period {object} Period object of the next period that is about to start
  */
 export const checkPermissionAndShowNotification = (period) => {
-  if (Notification.permission === 'granted') {
+  if (Notification.permission === "granted") {
     showNotificationForPeriod(period);
-  } else if (Notification.permission !== 'denied') {
+  } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
+      if (permission === "granted") {
         showNotificationForPeriod(period);
       }
     });

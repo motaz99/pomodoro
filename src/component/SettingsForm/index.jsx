@@ -3,16 +3,22 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import PropTypes from 'prop-types';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
-import firebase from '../../firebase';
+import { db } from '../../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const SettingsForm = ({ onShouldAutoStartChange, shouldAutoStart, periods }) => {
   const [settingsPeriods, setSettingsPeriods] = useState(periods);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    firebase.firestore().collection('timer').doc('settings').set({
-      periods: settingsPeriods,
-    }, { merge: true });
+    try {
+      await setDoc(doc(db, 'timer', 'settings'), {
+        periods: settingsPeriods,
+      }, { merge: true });
+      console.log('Settings updated successfully!');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+    }
   };
 
   const changePeriod = (periodName, propertyKey, propertyValue) => {
